@@ -1,4 +1,4 @@
-﻿using HouseRentingSystem7.ApplicationDbContext;
+﻿using HouseRentingSystem7.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +28,14 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddApplicationIdentity(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+        services.AddDefaultIdentity<IdentityUser>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+        })
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
         return services;

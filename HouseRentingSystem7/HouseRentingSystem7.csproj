@@ -24,4 +24,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HouseRentingSystem7.Core\HouseRentingSystem7.Core.csproj" />
+  </ItemGroup>
+
 </Project>

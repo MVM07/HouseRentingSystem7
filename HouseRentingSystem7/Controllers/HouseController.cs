@@ -2,7 +2,7 @@
 
 namespace HouseRentingSystem7.Controllers
 {
-    public class HouseController : Controller
+    public class HouseController : BaseController
     {
         public IActionResult All()
         {

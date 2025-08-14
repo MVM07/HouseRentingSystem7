@@ -2,7 +2,7 @@
 
 namespace HouseRentingSystem7.Controllers
 {
-    public class AgentController : Controller
+    public class AgentController : BaseController
     {
         public IActionResult Become()
         {

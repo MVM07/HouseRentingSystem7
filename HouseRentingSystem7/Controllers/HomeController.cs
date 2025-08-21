@@ -24,6 +24,7 @@ namespace HouseRentingSystem7.Controllers
             return View(houses);
         }
 
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

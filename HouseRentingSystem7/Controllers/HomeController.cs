@@ -19,7 +19,7 @@ namespace HouseRentingSystem7.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var houses = await houseService.LastThreeHouses();
+            var houses = await houseService.LastThreeHousesAsync();
 
             return View(houses);
         }

@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HouseRentingSystem7.Core.Models.Agent;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HouseRentingSystem7.Controllers
 {
     public class AgentController : BaseController
     {
-        public IActionResult Become()
+        [HttpGet]
+        public async Task<IActionResult> Become()
         {
-            return View();
+            var model = new BecomeAgentFormModel();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Become(BecomeAgentFormModel agent)
+        {
+            return RedirectToAction(nameof(HouseController.All), "House");
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using HouseRentingSystem7.Infrastructure.Data;
+﻿using HouseRentingSystem7.Core.Contracts;
+using HouseRentingSystem7.Core.Services;
+using HouseRentingSystem7.Infrastructure.Data;
+using HouseRentingSystem7.Infrastructure.Data.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +11,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        services.AddScoped<IHouseService, HouseService>();
+
         return services;
     }
 
@@ -20,6 +25,8 @@ public static class ServiceCollectionExtensions
         {
             options.UseSqlServer(connectionString);
         });
+
+        services.AddScoped<IRepository, Repository>();
 
         services.AddDatabaseDeveloperPageExceptionFilter();
 

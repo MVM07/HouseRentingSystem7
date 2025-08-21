@@ -22,7 +22,8 @@ namespace HouseRentingSystem7.Core.Services
                 PhoneNumber = phoneNumber
             };
 
-
+            await repository.AddAsync(agent);
+            await repository.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsByIdAsync(string userId)

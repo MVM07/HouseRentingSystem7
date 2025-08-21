@@ -7,11 +7,5 @@ namespace HouseRentingSystem7.Controllers
     [Authorize]
     public class BaseController : Controller
     {
-        public string UserId()
-        {
-            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "Not found";
-
-            return userId;
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using HouseRentingSystem7.Core.Contracts;
 using HouseRentingSystem7.Core.Models.Agent;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HouseRentingSystem7.Controllers
 {
@@ -16,6 +17,10 @@ namespace HouseRentingSystem7.Controllers
         [HttpGet]
         public async Task<IActionResult> Become()
         {
+            if (await agentService.ExistsByIdAsync(User.UserId()))
+            {
+                return BadRequest();
+            }
             var model = new BecomeAgentFormModel();
 
             return View(model);
@@ -24,7 +29,7 @@ namespace HouseRentingSystem7.Controllers
         [HttpPost]
         public async Task<IActionResult> Become(BecomeAgentFormModel agent)
         {
-            return RedirectToAction(nameof(HouseController.All), "House");
+            
         }
     }
 }

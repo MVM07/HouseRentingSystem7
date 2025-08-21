@@ -11,7 +11,7 @@
         <p class="lead"> There are no houses in the system currently available so why don't you just add one? </p>
         <hr class="my-4">
         <p class="lead">
-            @if (User.Identity.IsAuthenticated)
+            @if (User?.Identity?.IsAuthenticated ?? false)
             {
                 <a asp-controller="House" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add House</a>
             }

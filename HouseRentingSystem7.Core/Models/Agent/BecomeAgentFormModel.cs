@@ -1,13 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HouseRentingSystem7.Core.Constants;
+using System.ComponentModel.DataAnnotations;
 using static HouseRentingSystem7.Data.Constants.DataConstants;
 
 namespace HouseRentingSystem7.Core.Models.Agent
 {
     public class BecomeAgentFormModel
     {
-        [Required]
-        [StringLength(AgentPhoneNumberMaxLength, MinimumLength = AgentPhoneNumberMinLength)]
+        [Required(ErrorMessage = MessageConstants.RequiredMessage)]
+        [StringLength(AgentPhoneNumberMaxLength, MinimumLength = AgentPhoneNumberMinLength,
+            ErrorMessage = MessageConstants.PhoneLengthMessage)]
         [Display(Name = "Phone Number")]
+        [Phone]
         public string PhoneNumber { get; set; } = string.Empty;
     }
 }

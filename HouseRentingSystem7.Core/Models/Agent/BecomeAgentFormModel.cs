@@ -8,7 +8,7 @@ namespace HouseRentingSystem7.Core.Models.Agent
     {
         [Required(ErrorMessage = MessageConstants.RequiredMessage)]
         [StringLength(AgentPhoneNumberMaxLength, MinimumLength = AgentPhoneNumberMinLength,
-            ErrorMessage = MessageConstants.PhoneLengthMessage)]
+            ErrorMessage = MessageConstants.LengthMessage)]
         [Display(Name = "Phone Number")]
         [Phone]
         public string PhoneNumber { get; set; } = string.Empty;

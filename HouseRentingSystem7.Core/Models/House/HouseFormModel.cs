@@ -25,6 +25,7 @@ namespace HouseRentingSystem7.Core.Models.House
         [Display(Name = "Image URL")]
         public string ImageUrl { get; set; } = string.Empty;
 
+        [Required]
         [Range(typeof(decimal), HouseRentMinValue, HouseRentMaxValue, 
             ErrorMessage = "Price per month must be a positive number and less than {2} leva.")]
         [Display(Name = "Price per month")]

@@ -4,7 +4,6 @@ using HouseRentingSystem7.Core.Models.House;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace HouseRentingSystem7.Controllers
 {
@@ -20,11 +19,21 @@ namespace HouseRentingSystem7.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All([FromQuery]AllHousesQueryModel query)
         {
-            var model = new AllHousesQueryModel();
+            var queryResult = await houseService.AllHousesAsync(query.Category,
+                query.SearchTerm,
+                query.Sorting,
+                query.CurrentPage,
+                query.HousesPerPage);
 
-            return View(model);
+            query.TotalHousesCount = queryResult.TotalHousesCount;
+            query.Houses = queryResult.Houses;
+
+            var houseCategories = await houseService.AllCategoryNamesAsync();
+            query.Categories = houseCategories;
+
+            return View(query);
         }
 
         //----------------------------------------------------------------------------------------------------

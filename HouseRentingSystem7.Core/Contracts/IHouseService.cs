@@ -1,6 +1,5 @@
 ﻿using HouseRentingSystem7.Core.Enumerations;
 using HouseRentingSystem7.Core.Models.House;
-using HouseRentingSystem7.Data.Models;
 
 namespace HouseRentingSystem7.Core.Contracts
 {

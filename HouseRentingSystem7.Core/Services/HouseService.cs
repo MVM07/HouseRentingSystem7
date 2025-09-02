@@ -5,7 +5,6 @@ using HouseRentingSystem7.Core.Models.House;
 using HouseRentingSystem7.Data.Models;
 using HouseRentingSystem7.Infrastructure.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace HouseRentingSystem7.Core.Services
 {
@@ -66,7 +65,7 @@ namespace HouseRentingSystem7.Core.Services
             housesToShow = sorting switch
             {
                 HouseSorting.Price => housesToShow.OrderBy(h => h.PricePerMonth),
-                HouseSorting.NotRentedFirst => housesToShow.OrderBy(h => h.RenterId == null)
+                HouseSorting.NotRentedFirst => housesToShow.OrderBy(h => h.RenterId != null)
                 .ThenByDescending(h => h.Id),
                 _ => housesToShow.OrderByDescending(h => h.Id)
             };
@@ -80,7 +79,7 @@ namespace HouseRentingSystem7.Core.Services
                     Title = h.Title,
                     Address = h.Address,
                     ImageUrl = h.ImageUrl,
-                    IsRented = h.RenterId != null,
+                    IsRented = !string.IsNullOrWhiteSpace(h.RenterId),
                     PricePerMonth = h.PricePerMonth
                 })
                 .ToList();
@@ -243,6 +242,41 @@ namespace HouseRentingSystem7.Core.Services
         }
 
         //--------------------------------------------------------------------------------------------------
+        public async Task<bool> IsRentedAsync(int id)
+        {
+            var house = await repository.GetByIdAsync<House>(id);
+
+            if (house == null)
+            {
+                return false;
+            }
+
+            bool isRented = !string.IsNullOrWhiteSpace(house.RenterId);
+
+            return isRented;
+        }
+
+        //--------------------------------------------------------------------------------------------------
+        public async Task<bool> IsRentedByUserWithIdAsync(int houseId, string userId)
+        {
+            bool result = true;
+
+            var house = await repository.GetByIdAsync<House>(houseId);
+
+            if (house == null)
+            {
+                return false;
+            }
+
+            if (house.RenterId != userId)
+            {
+                return false;
+            }
+
+            return result;
+        }
+
+        //--------------------------------------------------------------------------------------------------
         public async Task<IEnumerable<HouseIndexServiceModel>> LastThreeHousesAsync()
         {
             var lastThreeHouses = await repository.AllReadOnly<House>()
@@ -257,6 +291,19 @@ namespace HouseRentingSystem7.Core.Services
                 .ToListAsync();
 
             return lastThreeHouses;
+        }
+
+        //--------------------------------------------------------------------------------------------------
+        public async Task RentAsync(int houseId, string userId)
+        {
+            var houseToRent = await repository.GetByIdAsync<House>(houseId);
+
+            if (houseToRent != null)
+            {
+                houseToRent.RenterId = userId;
+
+                await repository.SaveChangesAsync();
+            }
         }
     }
 }

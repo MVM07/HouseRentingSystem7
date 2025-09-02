@@ -36,5 +36,11 @@ namespace HouseRentingSystem7.Core.Contracts
         Task<int> GetHouseCategoryId(int houseId);
 
         Task DeleteAsync(int houseId);
+
+        Task<bool> IsRentedAsync(int id);
+
+        Task<bool> IsRentedByUserWithIdAsync(int houseId, string userId);
+
+        Task RentAsync(int houseId, string userId);
     }
 }

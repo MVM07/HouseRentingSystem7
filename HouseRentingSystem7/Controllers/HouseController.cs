@@ -4,6 +4,7 @@ using HouseRentingSystem7.Core.Models.House;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace HouseRentingSystem7.Controllers
 {
@@ -40,9 +41,22 @@ namespace HouseRentingSystem7.Controllers
 
         public async Task<IActionResult> Mine() 
         {
-            var model = new AllHousesQueryModel();
+            IEnumerable<HouseServiceModel> myHouses = null;
 
-            return View(model);
+            var userId = User.UserId();
+
+            if (await agentService.ExistsByIdAsync(userId))
+            {
+                int? currentAgentId = await agentService.GetAgentIdAsync(userId);
+
+                myHouses = await houseService.AllHousesByAgentId(currentAgentId);
+            }
+            else
+            {
+                myHouses = await houseService.AllHousesByUserId(userId);
+            }
+
+            return View(myHouses);
         }
 
         //----------------------------------------------------------------------------------------------------
@@ -85,17 +99,64 @@ namespace HouseRentingSystem7.Controllers
         //----------------------------------------------------------------------------------------------------
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var model = new HouseFormModel();
+            if (await houseService.ExistsAsync(id) == false)
+            {
+                return BadRequest();
+            }
 
-            return View(model);
+            if (await houseService.HasAgentWithIdAsync(id, User.UserId()) == false)
+            {
+                return Unauthorized();
+            }
+
+            var house = await houseService.HouseDetailsByIdAsync(id);
+
+            var houseCategoryId = await houseService.GetHouseCategoryId(house.Id);
+
+            var houseModel = new HouseFormModel()
+            {
+                Title = house.Title,
+                Address = house.Address,
+                Description = house.Description,
+                ImageUrl = house.ImageUrl,
+                PricePerMonth = house.PricePerMonth,
+                CategoryId = houseCategoryId,
+                Categories = await houseService.AllCategoriesAsync()
+            };
+
+            return View(houseModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(int id, HouseFormModel model)
         {
-            return RedirectToAction(nameof(Details), new { id = "1" });
+            if (await houseService.ExistsAsync(id) == false)
+            {
+                return View();
+            }
+
+            if (await houseService.HasAgentWithIdAsync(id, User.UserId()) == false)
+            {
+                return Unauthorized();
+            }
+
+            if (await houseService.CategoryExists(model.CategoryId) == false)
+            {
+                ModelState.AddModelError(nameof(model.CategoryId), "Category doesn't exist.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Categories = await houseService.AllCategoriesAsync();
+
+                return View(model);
+            }
+
+            await houseService.EditAsync(model, id);
+
+            return RedirectToAction(nameof(Details), new { id = id });
         }
 
         //----------------------------------------------------------------------------------------------------
@@ -118,7 +179,12 @@ namespace HouseRentingSystem7.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var model = new HouseDetailsViewModel();
+            if (await houseService.ExistsAsync(id) == false)
+            {
+                return BadRequest();
+            }
+
+            var model = await houseService.HouseDetailsByIdAsync(id);
 
             return View(model);
         }

@@ -162,6 +162,18 @@ namespace HouseRentingSystem7.Core.Services
         }
 
         //--------------------------------------------------------------------------------------------------
+        public async Task DeleteAsync(int houseId)
+        {
+            var houseToDelete = await repository.GetByIdAsync<House>(houseId);
+
+            if (houseToDelete != null)
+            {
+                await repository.DeleteAsync<House>(houseToDelete.Id);
+                await repository.SaveChangesAsync();
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------------
         public async Task EditAsync(HouseFormModel model, int id)
         {
             var houseToEdit = await repository.GetByIdAsync<House>(id);

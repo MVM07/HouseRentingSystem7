@@ -294,6 +294,18 @@ namespace HouseRentingSystem7.Core.Services
         }
 
         //--------------------------------------------------------------------------------------------------
+        public async Task LeaveAsync(int houseId)
+        {
+            var houseToLeave = await repository.GetByIdAsync<House>(houseId);
+
+            if (houseToLeave != null)
+            {
+                houseToLeave.RenterId = "";
+                await repository.SaveChangesAsync();
+            }
+        }
+
+        //--------------------------------------------------------------------------------------------------
         public async Task RentAsync(int houseId, string userId)
         {
             var houseToRent = await repository.GetByIdAsync<House>(houseId);

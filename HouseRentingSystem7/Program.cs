@@ -1,4 +1,5 @@
 using HouseRentingSystem7.ModelBinders;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddControllersWithViews(options =>
 {
     options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+    options.Filters.Add<AutoValidateAntiforgeryTokenAttribute>();
 });
 
 builder.Services.AddApplicationServices();
@@ -16,9 +18,15 @@ builder.Services.AddApplicationServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error/500");
+    app.UseStatusCodePagesWithRedirects("Home/Error?statusCode={0}");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -31,7 +39,17 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapDefaultControllerRoute();
-app.MapRazorPages();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "House Details",
+        pattern: "/House/Details/{id}/{information}",
+        defaults: new {Controller = "House", Action = "Details"}
+        );
+    endpoints.MapDefaultControllerRoute();
+    endpoints.MapRazorPages();
+});
+
 
 app.Run();
